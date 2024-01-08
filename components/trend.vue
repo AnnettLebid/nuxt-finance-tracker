@@ -3,7 +3,7 @@
     <div class="font-bold" :class="[color]">{{ title }}</div>
     <div class="text-2xl font-extrabold text-black dark:text-white mb-2">
       <USkeleton class="h-8 w-full" v-if="loading" />
-      <div v-else>{{ amount }}</div>
+      <div v-else>{{ currency }}</div>
     </div>
     <div>
       <USkeleton class="h-6 w-full" v-if="loading" />
@@ -36,6 +36,7 @@ const icon = computed(() => {
     ? "i-heroicons-arrow-trending-up"
     : "i-heroicons-arrow-trending-down";
 });
+
 const percentageTrend = computed(() => {
   if (props.amount === 0 || props.lastAmount === 0) return "0%";
   const bigger = Math.max(props.amount, props.lastAmount);
@@ -43,6 +44,8 @@ const percentageTrend = computed(() => {
   const ratio = ((bigger - lower) / lower) * 100;
   return `${Math.ceil(ratio)}%`;
 });
+
+const { currency } = useCurrency(props.amount);
 </script>
 
 <style scoped>
