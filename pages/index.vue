@@ -56,11 +56,27 @@ const client = useSupabaseClient();
 
 const { data } = await useAsyncData("transactions", async () => {
   const { data, error } = await client.from("transactions").select();
-  console.log(data, error);
   if (error) return [];
   return data;
 });
 transactions.value = data.value;
+
+const transactionsGroupedByDate = computed(() => {
+  let grouped = {};
+
+  for (const transaction of transactions.value) {
+    const date = new Date(transaction.created_at).toISOString().split("T")[0];
+    console.log("date", date);
+
+    if (!grouped[date]) {
+      grouped[date] = [];
+    }
+
+    grouped[date].push(transaction);
+  }
+  return grouped;
+});
+console.log("transactionsGroupedByDate", transactionsGroupedByDate.value);
 </script>
 
 <style scoped></style>
