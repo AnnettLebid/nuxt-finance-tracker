@@ -37,11 +37,30 @@
       :loading="false"
     />
   </section>
+
+  <section>
+    <Transaction
+      v-for="transaction in transactions"
+      :key="transaction.id"
+      :transaction="transaction"
+    />
+  </section>
 </template>
 
 <script setup>
 import { transactionViewOptions } from "~/constants";
 const selectedView = ref(transactionViewOptions[1]);
+const transactions = ref([]);
+
+const client = useSupabaseClient();
+
+const { data } = await useAsyncData("transactions", async () => {
+  const { data, error } = await client.from("transactions").select();
+  console.log(data, error);
+  if (error) return [];
+  return data;
+});
+transactions.value = data.value;
 </script>
 
 <style scoped></style>
