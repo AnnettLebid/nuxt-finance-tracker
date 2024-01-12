@@ -47,16 +47,7 @@
       </div>
     </div>
     <div>
-      <UModal v-model="isOpen">
-        <UCard
-          :ui="{
-            ring: '',
-            divide: 'divide-y divide-gray-100 dark:divide-gray-800',
-          }"
-        >
-          hello
-        </UCard>
-      </UModal>
+      <TransactionModal v-model="isOpen" />
       <UButton
         @click="isOpen = true"
         icon="i-heroicons-plus-circle"
