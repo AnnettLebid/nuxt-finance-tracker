@@ -16,6 +16,7 @@
       <div>{{ currency }}</div>
       <UDropdown :items="items" :popper="{ placement: 'bottom-start' }">
         <UButton
+          :loading="isLoading"
           color="white"
           variant="ghost"
           trailing-icon="i-heroicons-ellipsis-horizontal"
@@ -29,6 +30,11 @@
 const props = defineProps({
   transaction: Object,
 });
+const emit = defineEmits(["deleted"]);
+const { currency } = useCurrency(props.transaction.amount);
+const supabase = useSupabaseClient(); //will not create another connection
+const isLoading = ref(false);
+const toast = useToast();
 
 const isIncome = computed(() => props.transaction.type === "Income");
 
@@ -40,7 +46,27 @@ const iconColor = computed(() =>
   isIncome.value ? "text-green-600" : "text-red-600"
 );
 
-const { currency } = useCurrency(props.transaction.amount);
+const deleteTransaction = async (id) => {
+  isLoading.value = true;
+  try {
+    console.log("props.transaction.id", props.transaction.id);
+    await supabase.from("transactions").delete().eq("id", props.transaction.id);
+    toast.add({
+      title: "Transaction deleted",
+      icon: "i-heroicons-check-circle",
+      color: "green",
+    });
+    emit("deleted", props.transaction.id);
+  } catch (error) {
+    toast.add({
+      title: "Transaction deleted",
+      icon: "i-heroicons-exclamation-circle",
+      color: "red",
+    });
+  } finally {
+    isLoading.value = false;
+  }
+};
 
 const items = [
   [
@@ -52,7 +78,7 @@ const items = [
     {
       label: "Delete",
       icon: "i-heroicons-trash-20-solid",
-      click: () => console.log("Delete"),
+      click: deleteTransaction,
     },
   ],
 ];

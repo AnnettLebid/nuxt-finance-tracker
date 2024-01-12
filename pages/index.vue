@@ -11,39 +11,79 @@
     <Trend
       color="green"
       title="Income"
-      :amount="4000"
+      :amount="incomeTotal"
       :last-amount="6000"
-      :loading="false"
-    />
-    <Trend
-      color="green"
-      title="Income"
-      :amount="6000"
-      :lastAmount="3000"
-      :loading="false"
+      :loading="isLoading"
     />
     <Trend
       color="green"
       title="Expense"
+      :amount="expenseTotal"
+      :lastAmount="3000"
+      :loading="isLoading"
+    />
+    <Trend
+      color="green"
+      title="Investments"
       :amount="5000"
       :lastAmount="3000"
-      :loading="false"
+      :loading="isLoading"
     />
     <Trend
       :color="red"
-      title="Investments"
+      title="Savings"
       :amount="8000"
       :lastAmount="3000"
-      :loading="false"
+      :loading="isLoading"
     />
   </section>
 
-  <section>
-    <Transaction
-      v-for="transaction in transactions"
-      :key="transaction.id"
-      :transaction="transaction"
-    />
+  <section class="flex justify-between mb-10">
+    <div>
+      <h2 class="text-2xl font-extrabold">Transactions</h2>
+      <div class="text-gray-500 dark:text-gray-400">
+        You have {{ incomeCount }} incomes and {{ expenseCount }} expenses this
+        period
+      </div>
+    </div>
+    <div>
+      <UModal v-model="isOpen">
+        <UCard
+          :ui="{
+            ring: '',
+            divide: 'divide-y divide-gray-100 dark:divide-gray-800',
+          }"
+        >
+          hello
+        </UCard>
+      </UModal>
+      <UButton
+        @click="isOpen = true"
+        icon="i-heroicons-plus-circle"
+        color="white"
+        variant="solid"
+        label="Add"
+      />
+    </div>
+  </section>
+
+  <section v-if="!isLoading">
+    <div
+      v-for="(transactionsOnDay, date) in transactionsGroupedByDate"
+      :key="date"
+    >
+      <DailyTransactionSummary :date="date" :transactions="transactionsOnDay" />
+      <Transaction
+        v-for="transaction in transactionsOnDay"
+        :key="transaction.id"
+        :transaction="transaction"
+        @deleted="fetchTransactions()"
+      />
+    </div>
+  </section>
+
+  <section v-else>
+    <USkeleton class="h-8 w-full mb-2" v-for="i in 4" :key="i" />
   </section>
 </template>
 
@@ -51,22 +91,59 @@
 import { transactionViewOptions } from "~/constants";
 const selectedView = ref(transactionViewOptions[1]);
 const transactions = ref([]);
+const isLoading = ref(false);
+const isOpen = ref(false);
 
 const client = useSupabaseClient();
 
-const { data } = await useAsyncData("transactions", async () => {
-  const { data, error } = await client.from("transactions").select();
-  if (error) return [];
-  return data;
-});
-transactions.value = data.value;
+const income = computed(() =>
+  transactions.value.filter((transaction) => transaction.type === "Income")
+);
+
+const expense = computed(() =>
+  transactions.value.filter((transaction) => transaction.type === "Expense")
+);
+
+const incomeCount = computed(() => income.value.length);
+const expenseCount = computed(() => expense.value.length);
+
+const incomeTotal = computed(() =>
+  income.value.reduce((acc, transaction) => acc + transaction.amount, 0)
+);
+
+const expenseTotal = computed(() =>
+  expense.value.reduce((acc, transaction) => acc + transaction.amount, 0)
+);
+
+const fetchTransactions = async () => {
+  try {
+    isLoading.value = true;
+    const { data } = await useAsyncData("transactions", async () => {
+      const { data, error } = await client.from("transactions").select();
+      return data;
+    });
+    return data.value;
+  } catch (error) {
+    toast.add({
+      title: "Something went wrong",
+      icon: "i-heroicons-exclamation-circle",
+      color: "red",
+    });
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+const refreshTransactions = async () =>
+  (transactions.value = await fetchTransactions());
+
+await refreshTransactions();
 
 const transactionsGroupedByDate = computed(() => {
   let grouped = {};
 
   for (const transaction of transactions.value) {
     const date = new Date(transaction.created_at).toISOString().split("T")[0];
-    console.log("date", date);
 
     if (!grouped[date]) {
       grouped[date] = [];
@@ -76,7 +153,6 @@ const transactionsGroupedByDate = computed(() => {
   }
   return grouped;
 });
-console.log("transactionsGroupedByDate", transactionsGroupedByDate.value);
 </script>
 
 <style scoped></style>
