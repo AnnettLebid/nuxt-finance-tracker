@@ -27,6 +27,10 @@ const expenseTotal = computed(() =>
   expense.value.reduce((acc, transaction) => acc + transaction.amount, 0)
 );
 
+function openModal() {
+  isOpen.value = true;
+}
+
 const fetchTransactions = async () => {
   try {
     isLoading.value = true;
@@ -126,7 +130,7 @@ const transactionsGroupedByDate = computed(() => {
     </div>
     <div>
       <TransactionModal v-model="isOpen" @saved="refreshTransactions()" />
-      <Button @click="isOpen = true"
+      <Button @click="openModal"
         ><Icon name="mdi-light:plus-circle" class="mr-1" />Add</Button
       >
     </div>
@@ -151,4 +155,3 @@ const transactionsGroupedByDate = computed(() => {
     <USkeleton class="h-8 w-full mb-2" v-for="i in 4" :key="i" />
   </section>
 </template>
-
