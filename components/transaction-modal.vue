@@ -3,7 +3,7 @@
     <UCard>
       <template #header> Add Transaction </template>
 
-      <UForm :state="state" :schema="schema" ref="form" @submit.prevent="save">
+      <UForm :state="state" :schema="schema" ref="form" @submit="save">
         <UFormGroup
           label="Transaction Type"
           :required="true"
@@ -33,7 +33,7 @@
             type="date"
             icon=" "
             i-heroicons-calendar-days-20-solid
-            v-model="state.create_at"
+            v-model="state.created_at"
           />
         </UFormGroup>
         <UFormGroup
@@ -138,6 +138,11 @@ const resetForm = () => {
 
 const isOpen = computed({
   get: () => props.modelValue,
-  set: (value) => emit("update:modelValue", value),
+  set: (value) => {
+    if (!value) {
+      resetForm();
+      emit("update:modelValue", value);
+    }
+  },
 });
 </script>
