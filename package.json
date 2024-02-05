@@ -8,7 +8,6 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "postinstall": "nuxt prepare",
     "seed": "node seed.mjs"
   },
   "devDependencies": {
