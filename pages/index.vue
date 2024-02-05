@@ -1,3 +1,81 @@
+<script setup>
+import { transactionViewOptions } from "~/constants";
+import Button from "~/components/Button.vue";
+const selectedView = ref(transactionViewOptions[1]);
+const transactions = ref([]);
+const isLoading = ref(false);
+const isOpen = ref(false);
+
+const client = useSupabaseClient();
+
+const income = computed(() =>
+  transactions.value.filter((transaction) => transaction.type === "Income")
+);
+
+const expense = computed(() =>
+  transactions.value.filter((transaction) => transaction.type === "Expense")
+);
+
+const incomeCount = computed(() => income.value.length);
+const expenseCount = computed(() => expense.value.length);
+
+const incomeTotal = computed(() =>
+  income.value.reduce((acc, transaction) => acc + transaction.amount, 0)
+);
+
+const expenseTotal = computed(() =>
+  expense.value.reduce((acc, transaction) => acc + transaction.amount, 0)
+);
+
+const fetchTransactions = async () => {
+  try {
+    isLoading.value = true;
+    const { data } = await useAsyncData("transactions", async () => {
+      const { data, error } = await client
+        .from("transactions")
+        .select()
+        .order("created_at", { ascending: false });
+      return data;
+    });
+    return data.value;
+  } catch (error) {
+    toast.add({
+      title: "Something went wrong",
+      icon: "i-heroicons-exclamation-circle",
+      color: "red",
+    });
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+const refreshTransactions = async () =>
+  (transactions.value = await fetchTransactions());
+
+await refreshTransactions();
+
+const transactionsGroupedByDate = computed(() => {
+  let grouped = {};
+
+  for (const transaction of transactions.value) {
+    const date = new Date(transaction.created_at).toISOString().split("T")[0];
+
+    if (!grouped[date]) {
+      grouped[date] = [];
+    }
+
+    grouped[date].push(transaction);
+  }
+  // const sorted = Object.keys(grouped).sort().reverse();
+
+  // return sorted.reduce((acc, key) => {
+  //   acc[key] = grouped[key];
+  //   return acc;
+  // }, {});
+  return grouped;
+});
+</script>
+
 <template>
   <section class="flex items-center justify-between mb-10">
     <h1 class="text-4xl font-extrabold">Summary</h1>
@@ -47,14 +125,10 @@
       </div>
     </div>
     <div>
-      <TransactionModal v-model="isOpen" />
-      <UButton
-        @click="isOpen = true"
-        icon="i-heroicons-plus-circle"
-        color="white"
-        variant="solid"
-        label="Add"
-      />
+      <TransactionModal v-model="isOpen" @saved="refreshTransactions()" />
+      <Button @click="isOpen = true"
+        ><Icon name="mdi-light:plus-circle" class="mr-1" />Add</Button
+      >
     </div>
   </section>
 
@@ -78,72 +152,3 @@
   </section>
 </template>
 
-<script setup>
-import { transactionViewOptions } from "~/constants";
-const selectedView = ref(transactionViewOptions[1]);
-const transactions = ref([]);
-const isLoading = ref(false);
-const isOpen = ref(false);
-
-const client = useSupabaseClient();
-
-const income = computed(() =>
-  transactions.value.filter((transaction) => transaction.type === "Income")
-);
-
-const expense = computed(() =>
-  transactions.value.filter((transaction) => transaction.type === "Expense")
-);
-
-const incomeCount = computed(() => income.value.length);
-const expenseCount = computed(() => expense.value.length);
-
-const incomeTotal = computed(() =>
-  income.value.reduce((acc, transaction) => acc + transaction.amount, 0)
-);
-
-const expenseTotal = computed(() =>
-  expense.value.reduce((acc, transaction) => acc + transaction.amount, 0)
-);
-
-const fetchTransactions = async () => {
-  try {
-    isLoading.value = true;
-    const { data } = await useAsyncData("transactions", async () => {
-      const { data, error } = await client.from("transactions").select();
-      return data;
-    });
-    return data.value;
-  } catch (error) {
-    toast.add({
-      title: "Something went wrong",
-      icon: "i-heroicons-exclamation-circle",
-      color: "red",
-    });
-  } finally {
-    isLoading.value = false;
-  }
-};
-
-const refreshTransactions = async () =>
-  (transactions.value = await fetchTransactions());
-
-await refreshTransactions();
-
-const transactionsGroupedByDate = computed(() => {
-  let grouped = {};
-
-  for (const transaction of transactions.value) {
-    const date = new Date(transaction.created_at).toISOString().split("T")[0];
-
-    if (!grouped[date]) {
-      grouped[date] = [];
-    }
-
-    grouped[date].push(transaction);
-  }
-  return grouped;
-});
-</script>
-
-<style scoped></style>
