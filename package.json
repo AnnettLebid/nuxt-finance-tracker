@@ -7,16 +7,23 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "nuxt prepare",
+    "seed": "node seed.mjs"
   },
   "devDependencies": {
     "@nuxtjs/supabase": "^1.1.5",
+    "@nuxtjs/tailwindcss": "^6.11.2",
     "nuxt": "^3.9.0",
+    "nuxt-icon": "^0.6.8",
     "vue": "^3.4.5",
     "vue-router": "^4.2.5",
     "zod": "^3.22.4"
   },
   "dependencies": {
-    "@nuxt/ui": "^2.11.1"
+    "@nuxt/ui": "^2.11.1",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.0",
+    "tailwind-merge": "^2.2.1"
   }
 }
