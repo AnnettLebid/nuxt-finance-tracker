@@ -2,8 +2,7 @@
   <UModal v-model="isOpen">
     <UCard>
       <template #header> Add Transaction </template>
-
-      <UForm :state="state" :schema="schema" ref="form" @submit="save">
+      <UForm :state="state" :schema="schema" ref="form" @submit.prevent="save">
         <UFormGroup
           label="Transaction Type"
           :required="true"
@@ -31,7 +30,7 @@
         >
           <UInput
             type="date"
-            icon=" "
+            icon=""
             i-heroicons-calendar-days-20-solid
             v-model="state.created_at"
           />
@@ -49,11 +48,11 @@
           />
         </UFormGroup>
         <UFormGroup
+          v-if="state.type === 'Expense'"
           :required="true"
           label="Category"
           hint="Optional"
           class="mb-4"
-          v-if="state.type === 'Expense'"
         >
           <USelect
             placeholder="Category"
@@ -74,7 +73,7 @@
 </template>
 
 <script setup>
-import { categories, transactionTypes } from "~/constants";
+import { categories, transactionTypes } from "~/app/constants";
 import { z } from "zod";
 
 const initialState = {
@@ -101,6 +100,15 @@ const defaultSchema = z.object({
   amount: z.number().positive("Amount needs to be more than 0"),
   created_at: z.string(),
   description: z.string().optional(),
+const props = defineProps({
+  modelValue: Boolean,
+});
+const emit = defineEmits(["update:modelValue"]);
+
+const defaultSchema = z.object({
+  created_at: z.string(),
+  description: z.string().optional(),
+  amount: z.number().positive("Amount needs to be more than 0"),
 });
 
 const incomeSchema = z.object({
@@ -127,6 +135,7 @@ const schema = z.intersection(
   defaultSchema
 );
 
+const form = ref();
 const save = async () => {
   form.value.validate();
 };
@@ -136,6 +145,13 @@ const resetForm = () => {
   form.value.clear();
 };
 
+const state = ref({
+  type: undefined,
+  amount: 0,
+  created_at: undefined,
+  description: undefined,
+  category: undefined,
+});
 const isOpen = computed({
   get: () => props.modelValue,
   set: (value) => {

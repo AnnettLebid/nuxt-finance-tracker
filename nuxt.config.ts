@@ -1,29 +1,16 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import { defineNuxtConfig } from "nuxt/config";
+// https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
-  modules: ["@nuxt/ui", "@nuxtjs/supabase", "@nuxtjs/tailwindcss"],
+  modules: ["@nuxt/ui", "@nuxtjs/supabase"],
+  future: {
+    compatibilityVersion: 4,
+  },
+  dir: {
+    app: "app",
+  },
   supabase: {
     redirect: false,
-  },
-  css: ["~/assets/css/main.css"],
-  postcss: {
-    plugins: {
-      tailwindcss: {},
-      autoprefixer: {},
-    },
-  },
-  vue: {
-    compilerOptions: {
-      isCustomElement: (tag) => ["lite-youtube"].includes(tag),
-    },
-  },
-  components: [
-    {
-      path: "~/components",
-      pathPrefix: false,
-    },
-  ],
-  devServer: {
-    port: 3001,
   },
 });
