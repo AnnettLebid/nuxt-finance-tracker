@@ -10,7 +10,3 @@
     </div>
   </header>
 </template>
-
-<script setup></script>
-
-<style scoped></style>
