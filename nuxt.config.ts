@@ -19,6 +19,20 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
+  imports: {
+    imports: [{ from: "clsx", name: "ClassValue", type: true }],
+  },
+
   css: ["~/assets/css/main.css"],
   compatibilityDate: "2024-08-27",
+
+  typescript: {
+    strict: true,
+    includeWorkspace: true,
+    tsConfig: {
+      compilerOptions: {
+        verbatimModuleSyntax: false,
+      },
+    },
+  },
 });
