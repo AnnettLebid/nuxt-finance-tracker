@@ -29,8 +29,12 @@ const buttonVariants = cva(
     variants: {
       variant: {
         primary: "bg-blue-400",
+        secondary: "border border-slate-400 hover:text-black/50",
+        outline: "border border-black",
+        subtle: "bg-gray-100",
         danger: "bg-red-500",
         alert: "bg-yellow-500",
+        ghost: "hover:bg-gray-200 hover:text-black",
       },
       size: {
         small: "py-2 px-4",
