@@ -35,7 +35,7 @@
 </template>
 
 <script setup lang="ts">
-import { Transaction } from "../Transaction.vue";
+import { Transaction } from "../Transactions/Item.vue";
 
 const props = defineProps<{ transactions: Transaction[] }>();
 
