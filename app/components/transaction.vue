@@ -7,9 +7,9 @@
         <UIcon :name="icon" :class="[iconColor]" />
         <div>{{ transaction.description }}</div>
       </div>
-      <UBadge color="white" v-if="transaction.category">{{
-        transaction.category
-      }}</UBadge>
+      <UBadge color="white" v-if="transaction.category"
+        >{{ transaction.category }}
+      </UBadge>
     </div>
 
     <div class="flex items-center justify-end space-x-2">
@@ -26,15 +26,27 @@
   </div>
 </template>
 
-<script setup>
-const props = defineProps({
-  transaction: Object,
-});
+<script setup lang="ts">
+export interface Transaction {
+  id: number;
+  category: string;
+  created_at: string;
+  description: string;
+  type: "Expense" | "Income" | "Investment";
+  amount: number;
+}
+
+interface TransactionProps {
+  transaction: Transaction;
+}
+const props = defineProps<TransactionProps>();
 const emit = defineEmits(["deleted"]);
+
 const { currency } = useCurrency(props.transaction.amount);
 const supabase = useSupabaseClient(); //will not create another connection
-const isLoading = ref(false);
 const toast = useToast();
+
+const isLoading = ref(false);
 
 const isIncome = computed(() => props.transaction.type === "Income");
 
@@ -46,10 +58,9 @@ const iconColor = computed(() =>
   isIncome.value ? "text-green-600" : "text-red-600"
 );
 
-const deleteTransaction = async (id) => {
+const deleteTransaction = async (id: number) => {
   isLoading.value = true;
   try {
-    console.log("props.transaction.id", props.transaction.id);
     await supabase.from("transactions").delete().eq("id", props.transaction.id);
     toast.add({
       title: "Transaction deleted",
