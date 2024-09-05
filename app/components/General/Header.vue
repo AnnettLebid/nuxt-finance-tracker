@@ -1,6 +1,6 @@
 <template>
   <header
-    :class="cn('flex justify-between items-baseline', props?.classes?.root)"
+    :class="cn('flex justify-between items-center', props?.classes?.root)"
   >
     <div>
       <h3 :class="cn('font-semibold text-lg', props?.classes?.title)">
@@ -23,7 +23,7 @@ import { cn } from "../../lib/utils.js";
 
 interface HeaderProps {
   title: string;
-  subTitle: string;
+  subTitle?: string;
   classes?: {
     root?: ClassValue;
     title?: ClassValue;
