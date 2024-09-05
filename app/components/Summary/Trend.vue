@@ -1,7 +1,7 @@
 <template>
   <div
     :class="
-      cn('p-3 flex flex-col gap-2 bg-white rounded-lg', props.classes?.root)
+      cn('p-3 flex flex-col gap-2 bg-white rounded-lg shadow-sm', props.classes?.root)
     "
   >
     <p :class="cn('font-bold', props?.classes?.title)">
