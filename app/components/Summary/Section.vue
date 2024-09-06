@@ -1,5 +1,7 @@
 <template>
-  <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 sm:gap-16 mb-10"">
+  <section
+    class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 sm:gap-8 mb-10"
+  >
     <SummaryTrend
       title="Income"
       :amount="incomeTotal"
@@ -39,19 +41,15 @@ import { Transaction } from "../Transactions/Item.vue";
 
 const props = defineProps<{ transactions: Transaction[] }>();
 
-const income = computed(() =>
-  props.transactions?.filter((transaction) => transaction.type === "Income")
-);
+const { income, expense } = useTransactions();
 
-const expense = computed(() =>
-  props.transactions?.filter((transaction) => transaction.type === "Expense")
-);
+watchEffect(() => console.log("income", income.value));
 
 const incomeTotal = computed(() =>
-  income.value?.reduce((acc, transaction) => acc + transaction.amount, 0)
+  income?.value?.reduce((acc, transaction) => acc + transaction.amount, 0)
 );
 
 const expenseTotal = computed(() =>
-  expense.value?.reduce((acc, transaction) => acc + transaction.amount, 0)
+  expense?.value?.reduce((acc, transaction) => acc + transaction.amount, 0)
 );
 </script>
