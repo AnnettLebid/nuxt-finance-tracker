@@ -32,9 +32,14 @@ export const useTransactions = () => {
 
   refreshTransactions();
 
+  const income = computed(() =>
+    transactions?.value?.filter((transaction) => transaction.type === "Income")
+  );
+
   const expense = computed(() =>
     transactions?.value?.filter((transaction) => transaction.type === "Expense")
   );
+
   const incomeCount = computed(
     () =>
       transactions?.value?.filter(
@@ -46,6 +51,7 @@ export const useTransactions = () => {
   return {
     isLoading,
     transactions,
+    income,
     expense,
     incomeCount,
     expenseCount,
