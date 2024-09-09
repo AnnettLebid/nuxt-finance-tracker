@@ -32,30 +32,19 @@
 </template>
 
 <script setup lang="ts">
-import { Transaction } from "./Item.vue";
+const {
+  fetchTransactions,
+  incomeCount,
+  expenseCount,
+  refreshTransactions,
+  transactionsGroupedByDate,
+} = useTransactions();
 
-const props = defineProps<{ transactions: Transaction[] }>();
-
-const { fetchTransactions, incomeCount, expenseCount, refreshTransactions } =
-  useTransactions();
 const isOpen = ref(false);
-
-const transactionsGroupedByDate = computed(() => {
-  let grouped = {};
-
-  for (const transaction of props?.transactions) {
-    const date = new Date(transaction.created_at).toISOString().split("T")[0];
-
-    if (!grouped[date]) {
-      grouped[date] = [];
-    }
-
-    grouped[date].push(transaction);
-  }
-  return grouped;
-}) as ComputedRef<{ [key: string]: Transaction[] }>;
 
 const openModal = () => {
   isOpen.value = true;
 };
+
+await refreshTransactions();
 </script>
