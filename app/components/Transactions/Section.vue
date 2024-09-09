@@ -6,7 +6,7 @@
       :sub-title="`You have ${incomeCount} incomes and ${expenseCount} expenses this period`"
     >
       <template #cta>
-        <!-- <TransactionModal v-model="isOpen" @saved="refreshTransactions()" /> -->
+        <TransactionModal v-model="isOpen" @saved="refreshTransactions()" />
         <UiButton @click="openModal" variant="secondary">
           <Icon name="mdi-light:plus-circle" class="mr-1" />
           Add
@@ -36,7 +36,9 @@ import { Transaction } from "./Item.vue";
 
 const props = defineProps<{ transactions: Transaction[] }>();
 
-const { fetchTransactions, incomeCount, expenseCount } = useTransactions();
+const { fetchTransactions, incomeCount, expenseCount, refreshTransactions } =
+  useTransactions();
+const isOpen = ref(false);
 
 const transactionsGroupedByDate = computed(() => {
   let grouped = {};
@@ -52,4 +54,8 @@ const transactionsGroupedByDate = computed(() => {
   }
   return grouped;
 }) as ComputedRef<{ [key: string]: Transaction[] }>;
+
+const openModal = () => {
+  isOpen.value = true;
+};
 </script>

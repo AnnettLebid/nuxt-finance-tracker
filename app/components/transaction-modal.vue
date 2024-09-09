@@ -2,7 +2,7 @@
   <UModal v-model="isOpen">
     <UCard>
       <template #header> Add Transaction </template>
-      <UForm :state="state" :schema="schema" ref="form" @submit.prevent="save">
+      <UForm :state="state" :schema="schema" ref="form" @submit="save">
         <UFormGroup
           label="Transaction Type"
           :required="true"
@@ -73,7 +73,7 @@
 </template>
 
 <script setup>
-import { categories, transactionTypes } from "~/app/constants";
+import { categories, transactionTypes } from "../constants.ts";
 import { z } from "zod";
 
 const initialState = {
@@ -100,15 +100,6 @@ const defaultSchema = z.object({
   amount: z.number().positive("Amount needs to be more than 0"),
   created_at: z.string(),
   description: z.string().optional(),
-const props = defineProps({
-  modelValue: Boolean,
-});
-const emit = defineEmits(["update:modelValue"]);
-
-const defaultSchema = z.object({
-  created_at: z.string(),
-  description: z.string().optional(),
-  amount: z.number().positive("Amount needs to be more than 0"),
 });
 
 const incomeSchema = z.object({
@@ -135,9 +126,35 @@ const schema = z.intersection(
   defaultSchema
 );
 
-const form = ref();
 const save = async () => {
-  form.value.validate();
+  if (form.value.errors.length) return;
+  isLoading.value = true;
+  try {
+    const { data, error } = await supabase
+      .from("transactions")
+      .upsert({ ...state.value });
+
+    if (!error) {
+      toast.add({
+        title: "Transaction saved",
+        icon: "i-heroicons-exclamation-circle",
+        color: "green",
+      });
+      isOpen.value = false;
+      emit("saved");
+      return;
+    }
+    throw error;
+  } catch (e) {
+    toast.add({
+      title: "Transaction not saved",
+      description: e.message,
+      icon: "i-heroicons-check-circle",
+      color: "red",
+    });
+  } finally {
+    isLoading.value = false;
+  }
 };
 
 const resetForm = () => {
@@ -145,13 +162,6 @@ const resetForm = () => {
   form.value.clear();
 };
 
-const state = ref({
-  type: undefined,
-  amount: 0,
-  created_at: undefined,
-  description: undefined,
-  category: undefined,
-});
 const isOpen = computed({
   get: () => props.modelValue,
   set: (value) => {
