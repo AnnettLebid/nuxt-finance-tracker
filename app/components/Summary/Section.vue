@@ -5,8 +5,8 @@
     <SummaryTrend
       title="Income"
       :amount="incomeTotal"
-      :last-amount="6000"
-      :loading="!transactions"
+      :last-amount="prevIncomeTotal"
+      :loading="isLoading"
       :classes="{
         title: 'text-teal-600',
       }"
@@ -15,41 +15,44 @@
     <SummaryTrend
       title="Expense"
       :amount="expenseTotal"
-      :last-amount="3000"
-      :loading="!transactions"
+      :last-amount="prevExpenseTotal"
+      :loading="isLoading"
       :classes="{ title: 'text-red-600' }"
     />
     <SummaryTrend
       title="Investments"
       :amount="5000"
       :last-amount="3000"
-      :loading="!transactions"
+      :loading="isLoading"
       :classes="{ title: 'text-teal-600' }"
     />
     <SummaryTrend
       title="Savings"
       :amount="8000"
       :last-amount="3000"
-      :loading="!transactions"
+      :loading="isLoading"
       :classes="{ title: 'text-teal-600' }"
     />
   </section>
 </template>
 
 <script setup lang="ts">
-import { Transaction } from "../Transactions/Item.vue";
+const props = defineProps<{
+  selectedPeriod: Ref<string>;
+}>();
 
-const props = defineProps<{ transactions: Transaction[] }>();
+const { selectedPeriod } = toRefs(props);
+const { current, previous } = useSelectedTimePeriod(selectedPeriod);
 
-const { income, expense } = useTransactions();
+const { refreshTransactions, incomeTotal, expenseTotal } =
+  useTransactions(current);
 
-watchEffect(() => console.log("income", income.value));
+const {
+  refreshTransactions: refreshPreviousTransactions,
+  incomeTotal: prevIncomeTotal,
+  expenseTotal: prevExpenseTotal,
+  isLoading,
+} = useTransactions(previous);
 
-const incomeTotal = computed(() =>
-  income?.value?.reduce((acc, transaction) => acc + transaction.amount, 0)
-);
-
-const expenseTotal = computed(() =>
-  expense?.value?.reduce((acc, transaction) => acc + transaction.amount, 0)
-);
+await Promise.all([refreshTransactions(), refreshPreviousTransactions()]);
 </script>
