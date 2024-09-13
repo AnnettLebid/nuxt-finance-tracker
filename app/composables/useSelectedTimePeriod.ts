@@ -6,17 +6,17 @@ export const useSelectedTimePeriod = (period: Ref<string>) => {
       case "Yearly":
         return {
           from: dayjs().startOf("year"),
-          to: new Date(),
+          to: dayjs().endOf("year"),
         };
       case "Monthly":
         return {
           from: dayjs().startOf("month"),
-          to: new Date(),
+          to: dayjs().endOf("month"),
         };
       case "Daily":
         return {
           from: dayjs().startOf("day"),
-          to: new Date(),
+          to: dayjs().endOf("day"),
         };
     }
   });
