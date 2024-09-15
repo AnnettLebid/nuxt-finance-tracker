@@ -6,21 +6,27 @@
         title: 'text-4xl font-extrabold',
       }"
     />
-    <!-- <div>
-      <USelectMenu v-model="selectedView" :options="transactionViewOptions" />
-    </div> -->
+    <div>
+      <USelectMenu v-model="selectedPeriod" :options="transactionViewOptions" />
+    </div>
   </section>
   <!-- <section>
     <Form />
   </section> -->
 
-  <SummarySection :transactions />
-  <TransactionsSection :transactions />
+  <SummarySection :selectedPeriod />
+  <TransactionsSection :selectedPeriod :transactions />
 </template>
 
 <script setup>
 import { transactionViewOptions } from "~/constants";
 
-const { transactions } = useTransactions();
-const selectedView = ref(transactionViewOptions[1]);
+const selectedPeriod = ref(transactionViewOptions[0]);
+
+const { current, previous } = useSelectedTimePeriod(selectedPeriod);
+const { refreshTransactions, transactions } = useTransactions(current);
+const { refreshTransactions: refreshPreviousTransactions } =
+  useTransactions(previous);
+
+await Promise.all([refreshTransactions(), refreshPreviousTransactions()]);
 </script>
