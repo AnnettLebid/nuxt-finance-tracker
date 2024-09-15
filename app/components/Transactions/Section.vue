@@ -13,7 +13,6 @@
         </UiButton>
       </template>
     </GeneralHeader>
-
     <div
       class="mt-10"
       v-for="(transactionsOnDay, date) in transactionsGroupedByDate"
@@ -32,19 +31,27 @@
 </template>
 
 <script setup lang="ts">
+import { Transaction } from "./Item.vue";
+
+const props = defineProps<{
+  selectedPeriod: Ref<string>;
+  transactions: Ref<Transaction[]>;
+}>();
+
+const { selectedPeriod } = toRefs(props);
+const { current } = useSelectedTimePeriod(selectedPeriod);
+
 const {
-  fetchTransactions,
+  refreshTransactions,
   incomeCount,
   expenseCount,
-  refreshTransactions,
   transactionsGroupedByDate,
-} = useTransactions();
+  fetchTransactions,
+} = useTransactions(current);
 
 const isOpen = ref(false);
 
 const openModal = () => {
   isOpen.value = true;
 };
-
-await refreshTransactions();
 </script>

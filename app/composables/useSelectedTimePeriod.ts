@@ -1,6 +1,16 @@
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 
-export const useSelectedTimePeriod = (period: Ref<string>) => {
+export interface TimePeriod {
+  from: Dayjs;
+  to: Dayjs;
+}
+
+export const useSelectedTimePeriod = (
+  period: Ref<string>
+): {
+  current: Ref<TimePeriod>;
+  previous: Ref<TimePeriod>;
+} => {
   const current = computed(() => {
     switch (period.value) {
       case "Yearly":
@@ -13,14 +23,14 @@ export const useSelectedTimePeriod = (period: Ref<string>) => {
           from: dayjs().startOf("month"),
           to: dayjs().endOf("month"),
         };
-      case "Daily":
+      default:
         return {
           from: dayjs().startOf("day"),
           to: dayjs().endOf("day"),
         };
     }
   });
-  const previous = computed(() => {
+  const previous = computed<TimePeriod>(() => {
     switch (period.value) {
       case "Yearly":
         return {
@@ -32,7 +42,7 @@ export const useSelectedTimePeriod = (period: Ref<string>) => {
           from: dayjs().subtract(1, "month").startOf("month"),
           to: dayjs().subtract(1, "month").endOf("month"),
         };
-      case "Daily":
+      default:
         return {
           from: dayjs().subtract(1, "day").startOf("day"),
           to: dayjs().subtract(1, "day").endOf("day"),

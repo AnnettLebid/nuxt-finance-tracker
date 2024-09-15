@@ -44,15 +44,10 @@ const props = defineProps<{
 const { selectedPeriod } = toRefs(props);
 const { current, previous } = useSelectedTimePeriod(selectedPeriod);
 
-const { refreshTransactions, incomeTotal, expenseTotal } =
-  useTransactions(current);
-
+const { incomeTotal, expenseTotal } = useTransactions(current);
 const {
-  refreshTransactions: refreshPreviousTransactions,
   incomeTotal: prevIncomeTotal,
   expenseTotal: prevExpenseTotal,
   isLoading,
 } = useTransactions(previous);
-
-await Promise.all([refreshTransactions(), refreshPreviousTransactions()]);
 </script>

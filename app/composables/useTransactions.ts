@@ -1,13 +1,8 @@
 import { Transaction } from "~/components/Transactions/Item.vue";
 
-interface DateRange {
-  from: Date;
-  to: Date;
-}
-
 const transactions = ref<Transaction[]>([]);
 
-export const useTransactions = (period: Ref<DateRange>) => {
+export const useTransactions = (period: Ref<TimePeriod>) => {
   const client = useSupabaseClient();
   const toast = useToast();
 
