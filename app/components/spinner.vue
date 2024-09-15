@@ -42,7 +42,7 @@ const classes = computed(() => {
       width="20"
       height="20"
       fill="currentColor"
-      class="mr-2 animate-spin"
+      class="animate-spin"
       viewBox="0 0 1792 1792"
       xmlns="http://www.w3.org/2000/svg"
     >
