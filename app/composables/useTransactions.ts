@@ -1,34 +1,47 @@
 import { Transaction } from "~/components/Transactions/Item.vue";
 
-export const useTransactions = () => {
+interface DateRange {
+  from: Date;
+  to: Date;
+}
+
+const transactions = ref<Transaction[]>([]);
+
+export const useTransactions = (period: Ref<DateRange>) => {
   const client = useSupabaseClient();
   const toast = useToast();
 
   const isLoading = ref(false);
-  const transactions = ref<Transaction[]>([]);
 
   const fetchTransactions = async () => {
+    isLoading.value = true;
     try {
-      isLoading.value = true;
-      const { data } = await useAsyncData("transactions", async () => {
-        const { data, error } = await client.from("transactions").select();
-        return data;
-      });
+      const { data } = await useAsyncData(
+        `transactions-${period.value.from.toISOString()}-${period.value.to.toISOString()}`,
+        async () => {
+          const { data, error } = await client
+            .from("transactions")
+            .select()
+            .gte("created_at", period.value.from.toISOString())
+            .lte("created_at", period.value.to.toISOString())
+            .order("created_at", { ascending: false });
+
+          if (error) return [];
+
+          return data;
+        }
+      );
       return data.value;
-    } catch (error) {
-      toast.add({
-        title: "Something went wrong",
-        icon: "i-heroicons-exclamation-circle",
-        color: "red",
-      });
     } finally {
       isLoading.value = false;
     }
   };
 
   const refreshTransactions = async () => {
-    transactions.value = (await fetchTransactions()) || [];
+    return (transactions.value = await fetchTransactions());
   };
+
+  watch(period, async () => await refreshTransactions());
 
   const income = computed(() =>
     transactions?.value?.filter((transaction) => transaction.type === "Income")
@@ -38,13 +51,15 @@ export const useTransactions = () => {
     transactions?.value?.filter((transaction) => transaction.type === "Expense")
   );
 
-  const incomeCount = computed(
-    () =>
-      transactions?.value?.filter(
-        (transaction) => transaction.type === "Income"
-      )?.length
+  const incomeCount = computed(() => income?.value?.length);
+  const expenseCount = computed(() => expense?.value?.length);
+
+  const incomeTotal = computed(() =>
+    income?.value?.reduce((acc, transaction) => acc + transaction.amount, 0)
   );
-  const expenseCount = computed(() => expense?.value.length);
+  const expenseTotal = computed(() =>
+    expense?.value?.reduce((acc, transaction) => acc + transaction.amount, 0)
+  );
 
   const transactionsGroupedByDate = computed(() => {
     let grouped = {};
@@ -66,7 +81,9 @@ export const useTransactions = () => {
     transactions,
     transactionsGroupedByDate,
     income,
+    incomeTotal,
     expense,
+    expenseTotal,
     incomeCount,
     expenseCount,
     fetchTransactions,
