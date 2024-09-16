@@ -94,7 +94,7 @@ const isLoading = ref(false);
 const state = ref({ ...initialState });
 
 const supabase = useSupabaseClient();
-const toast = useToast();
+const { toastSuccess, toastError } = useAppToast();
 
 const defaultSchema = z.object({
   amount: z.number().positive("Amount needs to be more than 0"),
@@ -135,22 +135,18 @@ const save = async () => {
       .upsert({ ...state.value });
 
     if (!error) {
-      toast.add({
+      toastSuccess({
         title: "Transaction saved",
-        icon: "i-heroicons-exclamation-circle",
-        color: "green",
       });
       isOpen.value = false;
       emit("saved");
       return;
     }
     throw error;
-  } catch (e) {
-    toast.add({
+  } catch (error) {
+    toastError({
       title: "Transaction not saved",
-      description: e.message,
-      icon: "i-heroicons-check-circle",
-      color: "red",
+      description: error.message,
     });
   } finally {
     isLoading.value = false;

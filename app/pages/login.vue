@@ -29,7 +29,7 @@
 </template>
 
 <script setup lang="ts">
-const toast = useToast();
+const { toastError } = useAppToast();
 const supabase = useSupabaseClient();
 
 const success = ref<boolean>(false);
@@ -47,22 +47,13 @@ const handleLogin = async () => {
     });
 
     if (error) {
-      return toast.add({
+      return toastError({
         title: "Error authenticating",
-        icon: "i-heroicons-exclamation-circle",
         description: error.message,
-        color: "red",
       });
     }
 
     success.value = true;
-  } catch (error) {
-    toast.add({
-      title: "Error authenticating",
-      icon: "i-heroicons-exclamation-circle",
-      description: error.message,
-      color: "red",
-    });
   } finally {
     isLoading.value = false;
   }

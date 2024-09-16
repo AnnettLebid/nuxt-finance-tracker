@@ -4,9 +4,8 @@ const transactions = ref<Transaction[]>([]);
 
 export const useTransactions = (period: Ref<TimePeriod>) => {
   const client = useSupabaseClient();
-  const toast = useToast();
 
-  const isLoading = ref(false);
+  const isLoading = ref<boolean>(false);
 
   const fetchTransactions = async () => {
     isLoading.value = true;
