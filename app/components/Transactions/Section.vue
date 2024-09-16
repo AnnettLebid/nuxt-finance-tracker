@@ -13,24 +13,29 @@
         </UiButton>
       </template>
     </GeneralHeader>
+    <UiSkeleton
+      :loading="isLoading"
+      v-for="index in 5"
+      :class="cn('h-10 mt-4')"
+    />
     <div
       class="mt-10"
       v-for="(transactionsOnDay, date) in transactionsGroupedByDate"
       :key="date"
     >
       <DailyTransactionSummary :date="date" :transactions="transactionsOnDay" />
-      <div v-for="transaction in transactionsOnDay">
-        <TransactionsItem
-          :key="transaction.id"
-          :transaction
-          @deleted="fetchTransactions()"
-        />
-      </div>
+      <TransactionsItem
+        v-for="transaction in transactionsOnDay"
+        :key="transaction.id"
+        :transaction
+        @deleted="fetchTransactions()"
+      />
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
+import { cn } from "../../lib/utils";
 import { Transaction } from "./Item.vue";
 
 const props = defineProps<{
@@ -47,6 +52,7 @@ const {
   expenseCount,
   transactionsGroupedByDate,
   fetchTransactions,
+  isLoading,
 } = useTransactions(current);
 
 const isOpen = ref(false);
