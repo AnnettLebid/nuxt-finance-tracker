@@ -11,7 +11,7 @@ export default defineNuxtConfig({
     app: "app",
   },
   supabase: {
-    redirect: false,
+    redirect: true,
   },
   postcss: {
     plugins: {
