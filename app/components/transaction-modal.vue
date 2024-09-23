@@ -1,7 +1,7 @@
 <template>
   <UModal v-model="isOpen">
     <UCard>
-      <template #header> Add Transaction </template>
+      <template #header> {{ isEditing ? "Edit" : "Add" }} Transaction </template>
       <UForm :state="state" :schema="schema" ref="form" @submit="save">
         <UFormGroup
           label="Transaction Type"
@@ -11,6 +11,7 @@
         >
           <USelect
             placeholder="Select the transaction type"
+            :disabled="isEditing"
             :options="transactionTypes"
             v-model="state.type"
           />
@@ -77,21 +78,27 @@ import { categories, transactionTypes } from "../constants.ts";
 import { z } from "zod";
 
 const initialState = {
-  type: undefined,
-  amount: 0,
-  created_at: undefined,
-  description: undefined,
-  categories: undefined,
+  type: props?.transaction?.type || undefined,
+  amount: props?.transaction?.amount || 0,
+  created_at: props?. transaction?.created_at || undefined,
+  description: props?. transaction?.description || undefined,
+  categories: props?. transaction?.categories || undefined,
 };
 
 const props = defineProps({
   modelValue: Boolean,
+  transaction: {
+    type: Object,
+    required: false,
+  }
 });
 const emit = defineEmits(["update:modelValue", "saved"]);
 
 const form = ref();
 const isLoading = ref(false);
 const state = ref({ ...initialState });
+
+const isEditing = computed(() => !!props.transaction);
 
 const supabase = useSupabaseClient();
 const { toastSuccess, toastError } = useAppToast();
@@ -132,7 +139,9 @@ const save = async () => {
   try {
     const { data, error } = await supabase
       .from("transactions")
-      .upsert({ ...state.value });
+      .upsert({ ...state.value,
+        id: props.transaction?.id,
+       });
 
     if (!error) {
       toastSuccess({
