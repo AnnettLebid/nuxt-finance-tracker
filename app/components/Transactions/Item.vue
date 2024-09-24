@@ -1,6 +1,6 @@
 <template>
   <div
-    class="grid grid-cols-3 py-4 border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-gray-100"
+    class="grid grid-cols-3 py-4 border-b border-gray-200 text-gray-900"
   >
     <div class="flex justify-between items-center col-span-2 space-x-4">
       <div class="flex items-center space-x-1">
@@ -23,6 +23,7 @@
         />
       </UDropdown>
     </div>
+    <TransactionModal v-model="isOpen" :transaction="transaction" @saved="emit('edited')"/>
   </div>
 </template>
 
@@ -40,13 +41,14 @@ interface TransactionProps {
   transaction: Transaction;
 }
 const props = defineProps<TransactionProps>();
-const emit = defineEmits(["deleted"]);
+const emit = defineEmits(["deleted", "edited"]);
 
 const { currency } = useCurrency(props.transaction.amount);
 const supabase = useSupabaseClient(); //will not create another connection
 const { toastSuccess, toastError } = useAppToast();
 
 const isLoading = ref(false);
+const isOpen = ref(false)
 
 const isIncome = computed(() => props.transaction.type === "Income");
 
@@ -57,6 +59,10 @@ const icon = computed(() =>
 const iconColor = computed(() =>
   isIncome.value ? "text-green-600" : "text-red-600"
 );
+
+const editTransaction = (transaction: Transaction) => {
+  isOpen.value = true;
+};
 
 const deleteTransaction = async (id: number) => {
   isLoading.value = true;
@@ -81,7 +87,7 @@ const items = [
     {
       label: "Edit",
       icon: "i-heroicons-pencil-square-20-solid",
-      click: () => console.log("Edit"),
+      click: () => editTransaction(props.transaction),
     },
     {
       label: "Delete",

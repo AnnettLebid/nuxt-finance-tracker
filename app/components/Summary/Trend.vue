@@ -30,7 +30,7 @@
               'text-red-600': !trendingUp,
             }"
           />
-          <div class="text-gray-500 dark:text-gray-200">
+          <div class="text-gray-500">
             {{ percentageTrend }}
           </div>
         </div>

@@ -1,6 +1,6 @@
 <template>
   <div
-    class="grid grid-cols-2 py-4 border-b border-gray-200 dark:border-gray-800 text-gray-500 dark:text-gray-400 font-bold"
+    class="grid grid-cols-2 py-4 border-b border-gray-200 text-gray-500 font-bold"
   >
     <div class="flex justify-between items-center">{{ date }}</div>
 
