@@ -1,9 +1,9 @@
 <template>
   <button :class="classes" :disabled="disabled" @click="$emit('click', $event)">
     <template v-if="loading">
-      <Spinner />
+      <Spinner class="mr-2" size="m" />
     </template>
-    <slot v-else />
+    <slot />
   </button>
 </template>
 <script setup lang="ts">
@@ -28,9 +28,9 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        primary: "bg-blue-400",
-        secondary: "border border-slate-400 hover:text-black/50",
-        outline: "border border-black",
+        primary: "bg-purple-500 text-white rounded-full hover:bg-purple-600",
+        secondary: "bg-purple-400 hover:text-black/50",
+        outline: "border border-purple-400 hover:bg-purple-500",
         subtle: "bg-gray-100",
         danger: "bg-red-500",
         alert: "bg-yellow-500",
