@@ -1,4 +1,5 @@
 <template>
+  <LayoutNavbar />
   <NuxtLayout>
     <NuxtPage />
     <UNotifications />

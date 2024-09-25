@@ -1,6 +1,10 @@
 /** @type {import('tailwindcss').Config} **/
 export default {
   theme: {
+    container: {
+      center: true,
+      padding: { lg: "5rem", DEFAULT: "1.25rem" },
+    },
     extend: {},
   },
   content: [

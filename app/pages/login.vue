@@ -13,7 +13,7 @@
         <UInput type="email" placeholder="Email" required v-model="email" />
       </UFormGroup>
 
-      <UiButton type="submit" :loading="isLoading">Sign in</UiButton>
+      <UiButton type="submit" :loading="isLoading">Log in</UiButton>
     </form>
   </UCard>
   <UCard v-else>
@@ -36,7 +36,7 @@ const success = ref<boolean>(false);
 const email = ref<string>("");
 const isLoading = ref<boolean>(false);
 
-useRedirectIfAuth();
+// useRedirectIfAuth();
 
 const handleLogin = async () => {
   isLoading.value = true;
@@ -59,5 +59,3 @@ const handleLogin = async () => {
   }
 };
 </script>
-
-<style scoped></style>
