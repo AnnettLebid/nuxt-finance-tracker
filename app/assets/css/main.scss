@@ -1,0 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    overflow-y: scroll;
+    font-family: "Poppins", "Roboto", "sans-serif";
+  }
+
+  html,
+  body {
+    background-color: hsl(257, 40%, 49%)
+  }
+}

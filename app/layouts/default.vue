@@ -1,7 +1,6 @@
 <template>
-  <div class="container mx-auto max-w-4xl">
-    <main class="my-10">
-      <AppHeader />
+  <div>
+    <main class="container main-content">
       <slot />
     </main>
   </div>
@@ -23,3 +22,10 @@ useHead({
   ],
 });
 </script>
+
+<style scoped lang="scss">
+.main-content {
+  background: url("../assets/css/bg-desktop.svg") no-repeat center;
+  background-size: cover;
+}
+</style>

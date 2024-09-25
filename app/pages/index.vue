@@ -1,21 +1,14 @@
 <template>
-  <section class="flex items-center justify-between mb-10 site-bg">
-    <GeneralHeader
-      :title="'Summary'"
-      :classes="{
-        title: 'text-4xl font-extrabold',
-      }"
-    />
-    <div>
-      <USelectMenu v-model="selectedPeriod" :options="transactionViewOptions" />
+  <section class="flex items-center justify-between min-h-screen">
+    <div class="max-w-xs">
+      <h1 class="text-white text-7xl font-bold">
+        Finance Management App Dashboard
+      </h1>
+      <h3 class="text-sm text-white mt-2 font-light">
+        Transform Your Financial Goals into Reality with Smart Management
+      </h3>
     </div>
   </section>
-  <!-- <section>
-    <Form />
-  </section> -->
-
-  <SummarySection :selectedPeriod />
-  <TransactionsSection :selectedPeriod :transactions />
 </template>
 
 <script setup>

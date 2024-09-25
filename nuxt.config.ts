@@ -26,7 +26,7 @@ export default defineNuxtConfig({
     imports: [{ from: "clsx", name: "ClassValue", type: true }],
   },
 
-  css: ["~/assets/css/main.css"],
+  css: ["~/assets/css/main.scss"],
   compatibilityDate: "2024-08-27",
 
   typescript: {
