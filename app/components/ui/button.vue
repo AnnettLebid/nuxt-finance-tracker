@@ -37,7 +37,8 @@ const buttonVariants = cva(
         ghost: "hover:bg-gray-200 hover:text-black",
       },
       size: {
-        small: "py-2 px-4",
+        small: "py-1 px-4",
+        medium: "py-2 px-4",
         large: "text-xl py-3 px-6",
       },
     },

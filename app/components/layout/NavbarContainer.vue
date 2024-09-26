@@ -19,7 +19,7 @@ const props = defineProps<{
 
 const classNames = computed(() => {
   return {
-    root: cn(["min-h-14 p-2 flex items-center", props?.classes?.root]),
+    root: cn(["h-14 p-2 flex items-center", props?.classes?.root]),
     main: cn(["container items-center flex", props?.classes?.container]),
   };
 });
