@@ -1,13 +1,21 @@
 <template>
-  <section class="flex items-center justify-between min-h-screen">
-    <div class="max-w-xs">
-      <h1 class="text-white text-7xl font-bold">
+  <section
+    class="flex flex-col items-center md:justify-between min-h-screen-nav md:flex-row gap-1 mt-8"
+  >
+    <div class="max-w-full mx-auto gap-1 flex flex-col">
+      <h1 class="text-white text-5xl font-bold md:text-7xl">
         Finance Management App Dashboard
       </h1>
-      <h3 class="text-sm text-white mt-2 font-light">
+      <h class="text-sm text-white mt-2 font-light">
         Transform Your Financial Goals into Reality with Smart Management
-      </h3>
+      </h>
     </div>
+    <NuxtImg
+      src="/financial-planning.svg"
+      alt="Hero image"
+      fit="cover"
+      width="640"
+    />
   </section>
 </template>
 
