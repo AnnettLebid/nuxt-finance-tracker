@@ -30,4 +30,8 @@ const { refreshTransactions: refreshPreviousTransactions } =
   useTransactions(previous);
 
 await Promise.all([refreshTransactions(), refreshPreviousTransactions()]);
+
+definePageMeta({
+  layout: "main",
+});
 </script>

@@ -26,8 +26,8 @@ useHead({
 </script>
 
 <style scoped lang="scss">
+
 .main-content {
-  background: url("../assets/css/bg-desktop.svg") no-repeat center;
-  background-size: cover;
+  background-color: hsl(257, 40%, 49%);
 }
 </style>

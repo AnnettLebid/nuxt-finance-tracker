@@ -1,41 +1,11 @@
 <template>
-  <header class="flex justify-between items-center mb-5">
-    <NuxtLink to="/" class="text-xl font-bold">Finance tracker</NuxtLink>
-
-    <UDropdown
-      v-if="user"
-      :items="items"
-      :ui="{ item: { disabled: 'cursor-text select-text' }, width: 'w-64' }"
-    >
-      <UAvatar
-        alt="Avatar"
-        src="https://avatars.githubusercontent.com/u/739984?v=4"
-      />
-
-      <template #account="{ item }">
-        <div class="text-left">
-          <p>Signed in as</p>
-          <p class="font-medium text-gray-900">
-            {{ user.email }}
-          </p>
-        </div>
-      </template>
-
-      <template #item="{ item }">
-        <span class="truncate">{{ item.label }}</span>
-
-        <UIcon
-          :name="item.icon"
-          class="flex-shrink-0 h-4 w-4 text-gray-400 ms-auto"
-        />
-      </template>
-    </UDropdown>
+  <header class="flex justify-between items-center mb-5 text-white">
+    <h2 class="text-xl font-bold">Personal Finance tracker</h2>
   </header>
 </template>
 
 <script setup lang="ts">
 const supabase = useSupabaseClient();
-const user = useSupabaseUser();
 
 const items = [
   [

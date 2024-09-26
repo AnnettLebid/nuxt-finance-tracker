@@ -1,31 +1,33 @@
 <template>
-  <UCard v-if="!success">
-    <template #header> Sign in to Finance tracker</template>
+  <div class="flex items-center justify-center mt-10">
+    <UCard v-if="!success">
+      <template #header> Sign in to Finance tracker</template>
 
-    <form @submit.prevent="handleLogin">
-      <UFormGroup
-        label="email"
-        name="email"
-        class="mb-4"
-        :required="true"
-        help="You will receive email with a confirmation link"
-      >
-        <UInput type="email" placeholder="Email" required v-model="email" />
-      </UFormGroup>
+      <form @submit.prevent="handleLogin">
+        <UFormGroup
+          label="email"
+          name="email"
+          class="mb-4"
+          :required="true"
+          help="You will receive email with a confirmation link"
+        >
+          <UInput type="email" placeholder="Email" required v-model="email" />
+        </UFormGroup>
 
-      <UiButton type="submit" :loading="isLoading">Log in</UiButton>
-    </form>
-  </UCard>
-  <UCard v-else>
-    <template #header> Email has been sent</template>
-    <div class="text-center">
-      <p class="mb-4">
-        We have sent email to <strong>{{ email }}</strong
-        >with a link to sign in
-      </p>
-      <p>Important: the link will expire in 5 minutes!</p>
-    </div>
-  </UCard>
+        <UiButton type="submit" :loading="isLoading">Log in</UiButton>
+      </form>
+    </UCard>
+    <UCard v-else>
+      <template #header> Email has been sent</template>
+      <div class="text-center">
+        <p class="mb-4">
+          We have sent email to <strong>{{ email }}</strong
+          >with a link to sign in
+        </p>
+        <p>Important: the link will expire in 5 minutes!</p>
+      </div>
+    </UCard>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -43,7 +45,7 @@ const handleLogin = async () => {
   try {
     const { data, error } = await supabase.auth.signInWithOtp({
       email: email.value,
-      options: { emailRedirectTo: "http://localhost:3000/confirm" },
+      options: { emailRedirectTo: "http://localhost:3000/transactions" },
     });
 
     if (error) {
